@@ -13,7 +13,7 @@ const dotenv = require('dotenv')
 // const authRoutes=require("./Routes/auth.route.js");
 dotenv.config();
 const app = express();
-const port = process.env.PORT;
+const port = process.env.PORT||5000;
 const Message = require("./model/message.js");
 
 initializePassport(passport);
@@ -24,8 +24,9 @@ app.use(express.static(path.join(__dirname, "public")));
 app.set("views", path.join(__dirname, "/views"));
 // app.use('/auth', authRoutes);
 app.use(cors({
-    origin: "https://ansh-op.onrender.com/",
-    credentials: true, 
+  origin: "*", // or restrict to your frontend domain
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
   }));
 
   const sessionMiddleware = session({
