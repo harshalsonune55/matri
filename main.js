@@ -15,7 +15,7 @@ const dotenv = require('dotenv')
 dotenv.config();
 const app = express();
 const port = process.env.PORT||5000;
-const path = require("path");
+
 
 app.use(cors({
   origin: "https://ansh-op.onrender.com", 
