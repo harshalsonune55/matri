@@ -24,7 +24,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.set("views", path.join(__dirname, "/views"));
 // app.use('/auth', authRoutes);
 app.use(cors({
-  origin: "*", // or restrict to your frontend domain
+  origin: "https://ansh-op.onrender.com", 
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
   }));
