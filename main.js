@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const path = require("path");
 const session = require("express-session");
+const MongoStore = require('connect-mongo');
 const passport = require("passport");
 const bcrypt = require("bcryptjs");
 const User = require("./database/data");
@@ -14,7 +15,6 @@ const dotenv = require('dotenv')
 dotenv.config();
 const app = express();
 const port = process.env.PORT||5000;
-const Message = require("./model/message.js");
 
 app.use(cors({
   origin: "https://ansh-op.onrender.com", 
@@ -30,13 +30,33 @@ app.use(express.static(path.join(__dirname, "public")));
 app.set("views", path.join(__dirname, "/views"));
 // app.use('/auth', authRoutes);
 
+const store=MongoStore.create({
+  mongoUrl:process.env.MONGO_URI,
+  crypto:{
+    secret: "secretshaadikeys",
+  },
+  touchAfter: 24 * 3600
+  
+});
+
+store.on("error",function(e){
+  console.log("Session store error",e);
+});
 
   const sessionMiddleware = session({
+    store,
     secret: "secretshaadikeys",
     resave: false,
     saveUninitialized: false,
-    cookie: { httpOnly: true, secure: false, maxAge: 24 * 60 * 60 * 1000 },
+    cookie: { 
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", // only secure in prod
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      maxAge: 24 * 60 * 60 * 1000,
+    },
   });
+
+
   
   app.use(sessionMiddleware);
 app.use(passport.initialize());
