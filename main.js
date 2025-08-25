@@ -31,7 +31,7 @@ app.set("views", path.join(__dirname, "/views"));
 // app.use('/auth', authRoutes);
 
 const store=MongoStore.create({
-  mongoUrl:process.env.MONGO_URI,
+  mongoUrl:process.env.MONGO_URL,
   crypto:{
     secret: "secretshaadikeys",
   },
