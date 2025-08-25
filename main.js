@@ -15,6 +15,7 @@ const dotenv = require('dotenv')
 dotenv.config();
 const app = express();
 const port = process.env.PORT||5000;
+const path = require("path");
 
 app.use(cors({
   origin: "https://ansh-op.onrender.com", 
@@ -222,7 +223,7 @@ app.get("/logout", (req, res) => {
 });
 
 app.get("/me", (req, res) => {
-    if (!req.isAuthenticated || !req.isAuthenticated()) {
+    if (!req.isAuthenticated()) {
       return res.status(401).json({ message: "Not logged in" });
     }
   
@@ -291,6 +292,10 @@ app.get("/me", (req, res) => {
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch profiles" });
     }
+  });
+
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "public", "index.html"));
   });
 
 app.listen(port, () => {
