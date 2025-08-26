@@ -27,7 +27,8 @@ initializePassport(passport);
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-app.use(express.static(path.join(__dirname, "public")));
+// app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, "dist")));
 app.set("views", path.join(__dirname, "/views"));
 // app.use('/auth', authRoutes);
 
@@ -233,54 +234,54 @@ app.get("/me", (req, res) => {
 
 
 
-  const server = http.createServer(app);
+  // const server = http.createServer(app);
 
-  const io = new Server(server, {
-    cors: {
-      origin: "http://localhost:5173/", 
-      methods: ["GET", "POST"],
-    },
-  });
+  // const io = new Server(server, {
+  //   cors: {
+  //     origin: "http://localhost:5173/", 
+  //     methods: ["GET", "POST"],
+  //   },
+  // });
 
-  io.use((socket, next) => {
-    sessionMiddleware(socket.request, {}, next);
-  });
+  // io.use((socket, next) => {
+  //   sessionMiddleware(socket.request, {}, next);
+  // });
   
-  io.use((socket, next) => {
-    passport.initialize()(socket.request, {}, () => {
-      passport.session()(socket.request, {}, next);
-    });
-  });
+  // io.use((socket, next) => {
+  //   passport.initialize()(socket.request, {}, () => {
+  //     passport.session()(socket.request, {}, next);
+  //   });
+  // });
 
-  io.on("connection", (socket) => {
-    const user = socket.request.user; 
-    if (user && user.name) {
-      console.log(`User connected: ${user.name}`);
-    } else {
-      console.log("A guest connected");
-    }
+  // io.on("connection", (socket) => {
+  //   const user = socket.request.user; 
+  //   if (user && user.name) {
+  //     console.log(`User connected: ${user.name}`);
+  //   } else {
+  //     console.log("A guest connected");
+  //   }
   
-    socket.on("send_message", async (text) => {
-      const msgData = {
-        user: user?.name || "Guest",
-        text,
-        time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-      };
+  //   socket.on("send_message", async (text) => {
+  //     const msgData = {
+  //       user: user?.name || "Guest",
+  //       text,
+  //       time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+  //     };
   
-      try {
-        const newMsg = new Message(msgData);
-        await newMsg.save(); 
-      } catch (err) {
-        console.error("Error saving message:", err);
-      }
+  //     try {
+  //       const newMsg = new Message(msgData);
+  //       await newMsg.save(); 
+  //     } catch (err) {
+  //       console.error("Error saving message:", err);
+  //     }
   
-      io.emit("receive_message", msgData);
-    });
+  //     io.emit("receive_message", msgData);
+  //   });
   
-    socket.on("disconnect", () => {
-      console.log(`User disconnected: ${user?.name || "Guest"}`);
-    });
-  });
+  //   socket.on("disconnect", () => {
+  //     console.log(`User disconnected: ${user?.name || "Guest"}`);
+  //   });
+  // });
 
 
   app.get("/api/users", async (req, res) => {
@@ -294,9 +295,7 @@ app.get("/me", (req, res) => {
     }
   });
 
-  app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "public", "index.html"));
-  });
+
 
 app.listen(port, () => {
   console.log(`Listening on port ${port}`);
